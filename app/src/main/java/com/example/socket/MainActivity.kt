@@ -3,6 +3,7 @@ package com.example.socket
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.socket.databinding.ActivityMainBinding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
@@ -14,7 +15,9 @@ class MainActivity : AppCompatActivity() {
     private var mbinding: ActivityMainBinding ?= null
     private val binding get() = mbinding!!
 
-    private lateinit var data: MutableList<Chatting>
+    private var data = mutableListOf<Chatting>()
+    private val adapter = MessageAdapter(data)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +26,11 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference("message/text")
-        binding.recyclerview.adapter
+        binding.recyclerview.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
+        binding.recyclerview.adapter = adapter
         binding.button.setOnClickListener {
             data.add(Chatting(binding.message.text.toString()))
+            adapter.notifyDataSetChanged()
         }
 
         ref.addValueEventListener(object : ValueEventListener {
