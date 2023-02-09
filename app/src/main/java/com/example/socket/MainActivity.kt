@@ -30,13 +30,15 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerview.adapter = adapter
         binding.button.setOnClickListener {
             data.add(Chatting(binding.message.text.toString()))
+            ref.setValue(data)
+            binding.message.text = null
             adapter.notifyDataSetChanged()
         }
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.getValue(String::class.java)
-                Log.d("상태","$value")
+//                val value = snapshot.getValue(String::class.java)
+//                Log.d("상태","$value")
             }
 
             override fun onCancelled(error: DatabaseError) {
