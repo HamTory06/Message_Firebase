@@ -14,16 +14,24 @@ class MainActivity : AppCompatActivity() {
     private var mbinding: ActivityMainBinding ?= null
     private val binding get() = mbinding!!
 
+    private lateinit var data: MutableList<Chatting>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mbinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         FirebaseApp.initializeApp(this)
         val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("message")
+        val ref = database.getReference("message/text")
+        binding.recyclerview.adapter
+        binding.button.setOnClickListener {
+            data.add(Chatting(binding.message.text.toString()))
+        }
+
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+                val value = snapshot.getValue(String::class.java)
+                Log.d("상태","$value")
             }
 
             override fun onCancelled(error: DatabaseError) {
