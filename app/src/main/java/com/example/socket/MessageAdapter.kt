@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.socket.databinding.MessageMeRecyclerviewItemBinding
 
 data class Chatting(
-    val text: String
+    val text: String = "Hello"
 )
 
 class MessageAdapter(val data: MutableList<Chatting>): RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
