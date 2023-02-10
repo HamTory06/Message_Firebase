@@ -8,12 +8,12 @@ import com.example.message.databinding.MessageMeRecyclerviewItemBinding
 
 
 data class Chatting(
-    val text: String
+    val text: String = "Hello"
 )
 
 class MessageAdapter(val data: MutableList<Chatting>): RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
     class MessageViewHolder(val binding: MessageMeRecyclerviewItemBinding): RecyclerView.ViewHolder(binding.root){
-
+        val text = binding.chatText
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {

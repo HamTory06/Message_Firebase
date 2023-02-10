@@ -36,7 +36,10 @@ class MainActivity : AppCompatActivity() {
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("상태","onDataChange")
+                for(i in snapshot.children){
+                    val getData = i.getValue(Chatting::class.java)
+                    data.add(getData!!)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
