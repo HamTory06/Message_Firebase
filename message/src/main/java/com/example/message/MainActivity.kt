@@ -27,14 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false)
         binding.recyclerview.adapter = adapter
 
-        binding.button.setOnClickListener {
-            data.add(Chatting(binding.message.text.toString()))
-            ref.setValue(data)
-            binding.message.text = null
-            adapter.notifyDataSetChanged()
-        }
-
-        ref.addValueEventListener(object : ValueEventListener {
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(i in snapshot.children){
                     val getData = i.getValue(Chatting::class.java)
@@ -45,8 +38,20 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 //애러 떳을때
                 Log.d("상태", error.message)
-                Toast.makeText(this@MainActivity,"${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity,"${error.message}",Toast.LENGTH_SHORT).show()
             }
         })
+
+        binding.message.setOnClickListener{
+            val layoutManager = binding.recyclerview.layoutManager as LinearLayoutManager
+            layoutManager.scrollToPosition(binding.recyclerview.adapter!!.itemCount -1)
+        }
+
+        binding.button.setOnClickListener {
+            data.add(Chatting(binding.message.text.toString()))
+            ref.setValue(data)
+            binding.message.text = null
+            adapter.notifyDataSetChanged()
+        }
     }
 }
