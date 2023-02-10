@@ -3,6 +3,7 @@ package com.example.socket
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.socket.databinding.ActivityMainBinding
 import com.google.firebase.FirebaseApp
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference("message/text")
+
         binding.recyclerview.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
         binding.recyclerview.adapter = adapter
         binding.button.setOnClickListener {
@@ -37,13 +39,13 @@ class MainActivity : AppCompatActivity() {
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-//                val value = snapshot.getValue(String::class.java)
-//                Log.d("상태","$value")
+                Log.d("상태","onDataChange")
             }
 
             override fun onCancelled(error: DatabaseError) {
                 //애러 떳을때
                 Log.d("상태", error.message)
+                Toast.makeText(this@MainActivity,"${error.message}",Toast.LENGTH_SHORT).show()
             }
         })
     }
