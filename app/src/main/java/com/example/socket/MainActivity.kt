@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = mbinding!!
 
     private var data = mutableListOf<Chatting>()
+    private var db = mutableListOf<Chatting>()
     private val adapter = MessageAdapter(data)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference("message/text")
+        var text: String = ""
 
         binding.recyclerview.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
         binding.recyclerview.adapter = adapter
@@ -28,8 +30,10 @@ class MainActivity : AppCompatActivity() {
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(i in snapshot.children){
+                    Log.d("상태","$i")
                     val getData = i.getValue(Chatting::class.java)
                     data.add(getData!!)
+                    db.add(getData!!)
                 }
             }
 
@@ -46,16 +50,27 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener {
-            data.add(Chatting(binding.message.text.toString()))
-            ref.setValue(data)
-            binding.message.text = null
-            adapter.notifyDataSetChanged()
+            if(!binding.message.text.toString().trim().isEmpty()){
+                Log.d("상태","EditText is not empty")
+                text = binding.message.text.toString()
+                db.add(Chatting(text))
+                ref.setValue(db)
+                binding.message.text = null
+                adapter.notifyDataSetChanged()
+            } else {
+                Log.d("상태","EditText is empty")
+            }
+
         }
+
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("상태","onChildAdded()")
                 val newdata = snapshot.getValue(Chatting::class.java)
-                Log.d("상태상태","${newdata?.text}")
+                Log.d("상태","Chatting = ${Chatting(text)}")
+                if(Chatting(text) == newdata){
+                    data.add(Chatting(text))
+                    adapter.notifyDataSetChanged()
+                }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
